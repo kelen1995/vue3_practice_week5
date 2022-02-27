@@ -25,6 +25,7 @@ const app = Vue.createApp({
     data() {
         return {
             products: [],
+            tempProduct:{},
             pagination: {},
             cart: {
                 carts:[],
@@ -35,7 +36,6 @@ const app = Vue.createApp({
         getProducts(page=1) {
             axios.get(`${apiUrl}/api/${apiPath}/products?page=${page}`)
             .then(res => {
-                console.log(res.data);
                 this.products = res.data.products;
                 this.pagination = res.data.pagination;
             })
@@ -43,6 +43,10 @@ const app = Vue.createApp({
                 console.log(err.response);
             })
         },
+        openProductModal(product) {
+            this.tempProduct = product;
+            this.$refs.productModal.openModal();
+        }
     },
     mounted() {
         this.getProducts();
@@ -50,6 +54,23 @@ const app = Vue.createApp({
 });
 
 app.component('pagination', pagination);
+app.component('productModal', {
+    template: '#userProductModal',
+    props:['product'],
+    data() {
+        return {
+            modal:{},
+        }
+    },
+    methods: {
+        openModal() {
+            this.modal.show();
+        }
+    },
+    mounted() {
+        this.modal = new bootstrap.Modal(document.getElementById('productModal'), {});
+    }
+})
 
 app.component('VForm', VeeValidate.Form);
 app.component('VField', VeeValidate.Field);
