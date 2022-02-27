@@ -1,3 +1,8 @@
+import pagination from './components/pagination.js'
+
+// API 資訊
+const apiUrl = 'https://vue3-course-api.hexschool.io/v2';
+const apiPath = "kn99";
 
 // 加入所有規則
 Object.keys(VeeValidateRules).forEach(rule => {
@@ -19,12 +24,32 @@ VeeValidate.configure({
 const app = Vue.createApp({
     data() {
         return {
+            products: [],
+            pagination: {},
             cart: {
                 carts:[],
             },
         }
     },
+    methods: {
+        getProducts(page=1) {
+            axios.get(`${apiUrl}/api/${apiPath}/products?page=${page}`)
+            .then(res => {
+                console.log(res.data);
+                this.products = res.data.products;
+                this.pagination = res.data.pagination;
+            })
+            .catch(err => {
+                console.log(err.response);
+            })
+        },
+    },
+    mounted() {
+        this.getProducts();
+    }
 });
+
+app.component('pagination', pagination);
 
 app.component('VForm', VeeValidate.Form);
 app.component('VField', VeeValidate.Field);
