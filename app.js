@@ -1,4 +1,5 @@
 import pagination from './components/pagination.js'
+import delProductModal from './components/delProductModal.js';
 
 // API 資訊
 const apiUrl = 'https://vue3-course-api.hexschool.io/v2';
@@ -30,6 +31,7 @@ const app = Vue.createApp({
             cart: {
                 carts:[],
             },
+            text: '123',
         }
     },
     methods: {
@@ -86,18 +88,27 @@ const app = Vue.createApp({
                 console.log(err);
             });
         },
-        deleteCarts(status, id) {
-            let url = `${apiUrl}/api/${apiPath}/cart/${id}`;// 刪除一筆購物車商品
+        deleteCarts(status, cart) {
+            let url = '';
             if (status === 'all') {//刪除全部購物車
                 url = `${apiUrl}/api/${apiPath}/carts/`;
+            } else if (status === 'single') {
+                url = `${apiUrl}/api/${apiPath}/cart/${cart.id}`;// 刪除一筆購物車商品
             }
             axios.delete(url)
             .then(res => {
+                this.hideDelProductModal();
                 this.getCarts();
             })
             .catch(err => {
                 console.log(err);
             });
+        },
+        openDelProductModal(status,title, cart) {
+            this.$refs.delModal.openModal(status, title, cart);
+        },
+        hideDelProductModal() {
+            this.$refs.delModal.hideModal();
         }
     },
     mounted() {
@@ -130,7 +141,8 @@ app.component('productModal', {
     mounted() {
         this.modal = new bootstrap.Modal(document.getElementById('productModal'), {});
     }
-})
+});
+app.component('delProductModal', delProductModal);
 
 app.component('VForm', VeeValidate.Form);
 app.component('VField', VeeValidate.Field);
