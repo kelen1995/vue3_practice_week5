@@ -63,7 +63,8 @@
           <pagination :pagination="pagination" @switch-page="getProducts"></pagination>
           <!-- 購物車列表 -->
           <div class="text-end">
-            <button class="btn btn-outline-danger" type="button" @click="openDelProductModal('all', '所有')">清空購物車</button>
+            <button class="btn btn-outline-danger" type="button" :class="{disabled: cart.carts.length < 1}" 
+              @click="openDelProductModal('all', '所有')">清空購物車</button>
           </div>
           <table class="table align-middle">
             <thead>
