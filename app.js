@@ -5,20 +5,8 @@ import delProductModal from './components/delProductModal.js';
 const apiUrl = 'https://vue3-course-api.hexschool.io/v2';
 const apiPath = "kn99";
 
-// 加入所有規則
-Object.keys(VeeValidateRules).forEach(rule => {
-    if (rule !== 'default') {
-      VeeValidate.defineRule(rule, VeeValidateRules[rule]);
-    }
-});
-
-// 讀取中文語系檔
-VeeValidateI18n.loadLocaleFromURL('./zh_TW.json');
-
-// 表單功能設定
-VeeValidate.configure({
-  generateMessage: VeeValidateI18n.localize('zh_TW'), // Activate the locale
-});
+// 表單驗證初始化
+initVeeValidate();
 
 // 建立 root component
 const app = Vue.createApp({
@@ -178,3 +166,20 @@ app.component('ErrorMessage', VeeValidate.ErrorMessage);
 app.use(VueLoading.Plugin);
 
 app.mount('#app');
+
+function initVeeValidate() {
+    // 加入所有規則
+    Object.keys(VeeValidateRules).forEach(rule => {
+        if (rule !== 'default') {
+          VeeValidate.defineRule(rule, VeeValidateRules[rule]);
+        }
+    });
+    
+    // 讀取中文語系檔
+    VeeValidateI18n.loadLocaleFromURL('./zh_TW.json');
+    
+    // 表單功能設定
+    VeeValidate.configure({
+      generateMessage: VeeValidateI18n.localize('zh_TW'), // Activate the locale
+    });
+}
