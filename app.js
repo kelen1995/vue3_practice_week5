@@ -1,4 +1,5 @@
 import pagination from './components/pagination.js'
+import productModal from './components/productModal.js';
 import delProductModal from './components/delProductModal.js';
 
 // API 資訊
@@ -133,30 +134,7 @@ const app = Vue.createApp({
 });
 
 app.component('pagination', pagination);
-app.component('productModal', {
-    template: '#userProductModal',
-    props:['product'],
-    data() {
-        return {
-            modal:{},
-        }
-    },
-    methods: {
-        openModal() {
-            this.modal.show();
-        },
-        hideModal() {
-            this.modal.hide();
-        },
-        addCarts() {
-            let cart = {product_id: this.product.id, qty: this.product.qty};
-            this.$emit('addCarts','add', cart);
-        }
-    },
-    mounted() {
-        this.modal = new bootstrap.Modal(document.getElementById('productModal'), {});
-    }
-});
+app.component('productModal', productModal);
 app.component('delProductModal', delProductModal);
 
 app.component('VForm', VeeValidate.Form);
