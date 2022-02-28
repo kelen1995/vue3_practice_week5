@@ -33,7 +33,7 @@ const app = Vue.createApp({
         }
     },
     methods: {
-        getProducts(page=1) {
+        getProducts(page=1) {// 取得商品列表
             axios.get(`${apiUrl}/api/${apiPath}/products?page=${page}`)
             .then(res => {
                 this.products = res.data.products;
@@ -44,12 +44,52 @@ const app = Vue.createApp({
             })
         },
         openProductModal(product) {
-            this.tempProduct = product;
+            this.tempProduct = {qty:1, ...product};
             this.$refs.productModal.openModal();
-        }
+        },
+        hideProductModal() {
+            this.$refs.productModal.hideModal();
+        },
+        getCarts() {// 取得購物車列表
+            axios.get(`${apiUrl}/api/${apiPath}/cart`)
+            .then(res => {
+                console.log(res.data.data);// 測試用，觀察目前購物車資料
+                this.cart = res.data.data;
+            })
+            .catch(err => {
+                console.log(err.response);
+            })
+        },
+        updateCarts(status, cart) {// 新增/修改購物車
+            const {id, product_id, qty} = cart;
+            // 新增購物車      
+            let method = 'post';
+            let url = `${apiUrl}/api/${apiPath}/cart/`;
+
+            if (status === 'edit') {// 更新購物車商品數量
+                method = 'put';
+                url = `${apiUrl}/api/${apiPath}/cart/${id}`;
+            }
+
+            // 發送請求
+            axios[method](url, {
+                data: {
+                    product_id,
+                    qty
+                }
+            })
+            .then(res => {
+                this.hideProductModal();
+                this.getCarts();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        },
     },
     mounted() {
         this.getProducts();
+        this.getCarts();
     }
 });
 
@@ -65,6 +105,13 @@ app.component('productModal', {
     methods: {
         openModal() {
             this.modal.show();
+        },
+        hideModal() {
+            this.modal.hide();
+        },
+        addCarts() {
+            let cart = {product_id: this.product.id, qty: this.product.qty};
+            this.$emit('addCarts','add', cart);
         }
     },
     mounted() {
