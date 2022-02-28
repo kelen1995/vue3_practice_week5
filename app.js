@@ -62,7 +62,7 @@ const app = Vue.createApp({
         },
         updateCarts(status, cart) {// 新增/修改購物車
             const {id, product_id, qty} = cart;
-            // 新增購物車      
+            // 新增購物車
             let method = 'post';
             let url = `${apiUrl}/api/${apiPath}/cart/`;
 
@@ -86,6 +86,19 @@ const app = Vue.createApp({
                 console.log(err);
             });
         },
+        deleteCarts(status, id) {
+            let url = `${apiUrl}/api/${apiPath}/cart/${id}`;// 刪除一筆購物車商品
+            if (status === 'all') {//刪除全部購物車
+                url = `${apiUrl}/api/${apiPath}/carts/`;
+            }
+            axios.delete(url)
+            .then(res => {
+                this.getCarts();
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        }
     },
     mounted() {
         this.getProducts();

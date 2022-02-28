@@ -62,7 +62,7 @@
           <pagination :pagination="pagination" @switch-page="getProducts"></pagination>
           <!-- 購物車列表 -->
           <div class="text-end">
-            <button class="btn btn-outline-danger" type="button">清空購物車</button>
+            <button class="btn btn-outline-danger" type="button" @click="deleteCarts('all')">清空購物車</button>
           </div>
           <table class="table align-middle">
             <thead>
@@ -77,7 +77,7 @@
               <template v-if="cart.carts.length > 0">
                 <tr v-for="cart in cart.carts" :key="cart.id">
                   <td>
-                    <button type="button" class="btn btn-outline-danger btn-sm">
+                    <button type="button" class="btn btn-outline-danger btn-sm" @click="deleteCarts('single',cart.id)">
                       <!-- <i class="fas fa-spinner fa-pulse"></i> -->
                       x
                     </button>
