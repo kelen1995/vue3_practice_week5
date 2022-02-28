@@ -18,7 +18,6 @@ VeeValidateI18n.loadLocaleFromURL('./zh_TW.json');
 // 表單功能設定
 VeeValidate.configure({
   generateMessage: VeeValidateI18n.localize('zh_TW'), // Activate the locale
-  validateOnInput: true, // 調整為：輸入文字時，就立即進行驗證
 });
 
 // 建立 root component
@@ -31,7 +30,10 @@ const app = Vue.createApp({
             cart: {
                 carts:[],
             },
-            text: '123',
+            order: {
+                user:{},
+                message:'',
+            },
         }
     },
     methods: {
@@ -55,7 +57,6 @@ const app = Vue.createApp({
         getCarts() {// 取得購物車列表
             axios.get(`${apiUrl}/api/${apiPath}/cart`)
             .then(res => {
-                console.log(res.data.data);// 測試用，觀察目前購物車資料
                 this.cart = res.data.data;
             })
             .catch(err => {
@@ -109,11 +110,31 @@ const app = Vue.createApp({
         },
         hideDelProductModal() {
             this.$refs.delModal.hideModal();
+        },
+        submitOrder({resetForm}) {
+            let data = {
+                ...this.order
+            }
+            console.log(data);
+            axios.post(`${apiUrl}/api/${apiPath}/order`, {
+                data: {...this.order}
+            })
+            .then(res => {
+                const {message, total} = res.data;
+                alert(`${message}，總金額為 ${total}`);
+                this.$refs.form.resetForm();
+                this.order.message = '';
+                this.getCarts();
+            })
+            .catch(err => {
+                console.log(err);
+            })
         }
     },
     mounted() {
         this.getProducts();
         this.getCarts();
+        console.log(this.$refs);
     }
 });
 
