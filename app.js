@@ -111,11 +111,12 @@ const app = Vue.createApp({
         hideDelProductModal() {
             this.$refs.delModal.hideModal();
         },
-        submitOrder({resetForm}) {
-            let data = {
-                ...this.order
+        submitOrder() {
+            if (this.cart.carts.length < 1) {// 若購物車沒有資料，不發出請求
+                alert('購物車目前沒有商品');
+                return;
             }
-            console.log(data);
+
             axios.post(`${apiUrl}/api/${apiPath}/order`, {
                 data: {...this.order}
             })
@@ -134,7 +135,6 @@ const app = Vue.createApp({
     mounted() {
         this.getProducts();
         this.getCarts();
-        console.log(this.$refs);
     }
 });
 
