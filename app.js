@@ -38,8 +38,10 @@ const app = Vue.createApp({
     },
     methods: {
         getProducts(page=1) {// 取得商品列表
+            let loader = this.$loading.show();
             axios.get(`${apiUrl}/api/${apiPath}/products?page=${page}`)
             .then(res => {
+                loader.hide();
                 this.products = res.data.products;
                 this.pagination = res.data.pagination;
             })
@@ -55,8 +57,10 @@ const app = Vue.createApp({
             this.$refs.productModal.hideModal();
         },
         getCarts() {// 取得購物車列表
+            let loader = this.$loading.show();
             axios.get(`${apiUrl}/api/${apiPath}/cart`)
             .then(res => {
+                loader.hide();
                 this.cart = res.data.data;
             })
             .catch(err => {
@@ -116,11 +120,13 @@ const app = Vue.createApp({
                 alert('購物車目前沒有商品');
                 return;
             }
+            let loader = this.$loading.show();
 
             axios.post(`${apiUrl}/api/${apiPath}/order`, {
                 data: {...this.order}
             })
             .then(res => {
+                loader.hide();
                 const {message, total} = res.data;
                 alert(`${message}，總金額為 ${total}`);
                 this.$refs.form.resetForm();
@@ -168,5 +174,7 @@ app.component('delProductModal', delProductModal);
 app.component('VForm', VeeValidate.Form);
 app.component('VField', VeeValidate.Field);
 app.component('ErrorMessage', VeeValidate.ErrorMessage);
+
+app.use(VueLoading.Plugin);
 
 app.mount('#app');
